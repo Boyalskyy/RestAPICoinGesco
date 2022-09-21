@@ -1,8 +1,8 @@
 package main
 
 import (
-	"ToDoList/coingesco"
-	"ToDoList/db"
+	"RestAPICoinGecko/coingesco"
+	"RestAPICoinGecko/db"
 	"fmt"
 	_ "github.com/lib/pq"
 	"net/http"

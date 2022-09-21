@@ -1,7 +1,7 @@
 package coingesco
 
 import (
-	"ToDoList/db"
+	"RestAPICoinGecko/db"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

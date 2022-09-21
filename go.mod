@@ -1,4 +1,4 @@
-module ToDoList
+module RestAPICoinGecko
 
 go 1.19
 
