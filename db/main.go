@@ -14,7 +14,7 @@ const (
 	dbname   = "price_BTC"
 )
 
-func Create(course float64) {
+func Create(course float64, name string) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -23,16 +23,24 @@ func Create(course float64) {
 		panic(err)
 	}
 	defer db.Close()
+	//	sqlStatement := `
+	//INSERT INTO priceBTC (price,coinname)
+	//VALUES ($1,$2)`
+	//	_, err = db.Exec(sqlStatement, course, name)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//}
 	sqlStatement := `
-INSERT INTO priceBTC (price)
-VALUES ($1)`
-	_, err = db.Exec(sqlStatement, course)
+UPDATE pricebtc
+SET price = $2
+WHERE coinname = $1;`
+	_, err = db.Exec(sqlStatement, name, course)
 	if err != nil {
 		panic(err)
 	}
 }
-
-func Get(limit string) []string {
+func Get(limit string, name string) []string {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -41,7 +49,7 @@ func Get(limit string) []string {
 		panic(err)
 	}
 	var prices []string
-	rows, err := db.Query(fmt.Sprintf("select price from priceBTC ORDER BY id DESC LIMIT %s ", limit))
+	rows, err := db.Query(fmt.Sprintf("select price from priceBTC WHERE coinname='%s' ORDER BY id DESC LIMIT %s ", name, limit))
 	if err != nil {
 		log.Fatal(err)
 	}

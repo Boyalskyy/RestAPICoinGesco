@@ -17,14 +17,20 @@ func doEvery(d time.Duration, f func(time.Time)) {
 }
 
 func GetAndSave(t time.Time) {
-	db.Create(coingesco.GetCoinGescoValue())
+	db.Create(coingesco.GetCoinGescoValueBTC())
+	db.Create(coingesco.GetCoinGescoValueETH())
 }
 func GetCourses(w http.ResponseWriter, r *http.Request) {
 	limit := r.URL.Query().Get("limit")
 	if limit == "" {
 		limit = "5"
 	}
-	fmt.Fprintf(w, strings.Join(db.Get(limit), "\n"))
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		fmt.Fprintf(w, "What cryptocurrency do you need")
+		return
+	}
+	fmt.Fprintf(w, strings.Join(db.Get(limit, name), "\n"))
 }
 func main() {
 
