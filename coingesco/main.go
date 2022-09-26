@@ -7,57 +7,56 @@ import (
 	"net/http"
 )
 
-type CoinGescoBTC struct {
-	BTC struct {
-		USD float64 `json:"usd"`
-	} `json:"bitcoin"`
-}
-type CoinGescoETH struct {
-	ETH struct {
-		USD float64 `json:"usd"`
-	} `json:"ethereum"`
-}
+//type CoinGescoBTC struct {
+//	BTC struct {
+//		USD float64 `json:"usd"`
+//	} `json:"bitcoin"`
+//}
+//type CoinGescoETH struct {
+//	ETH struct {
+//		USD float64 `json:"usd"`
+//	} `json:"ethereum"`
+//}
 
-func GetCoinGescoValueBTC() (float64, string) {
-	responseBTC, err := http.Get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+func GetCoinGescoValue(base string, quote string) (float64, error) {
+	response, err := http.Get(fmt.Sprintf("https://api.coingecko.com/api/v3/simple/price?ids=%s&vs_currencies=%s", base, quote))
 
 	if err != nil {
-		fmt.Println(err)
+		return 0, err
 	}
-	var coinGescoResponseBTC CoinGescoBTC
+	result := make(map[string]map[string]float64)
 
 	// read response body
-	body, err := ioutil.ReadAll(responseBTC.Body)
+	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println(err)
+		return 0, err
 	}
 	// close response body
-	responseBTC.Body.Close()
-	json.Unmarshal(body, &coinGescoResponseBTC)
+	response.Body.Close()
+	json.Unmarshal(body, &result)
 
 	fmt.Println(string(body))
-	BTC := "bitcoin"
-	return coinGescoResponseBTC.BTC.USD, BTC
+	return result[base][quote], nil
 }
 
-func GetCoinGescoValueETH() (float64, string) {
-	responseETH, err := http.Get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-	var coinGescoResponseETH CoinGescoETH
-
-	// read response body
-	body, err := ioutil.ReadAll(responseETH.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	// close response body
-	responseETH.Body.Close()
-	json.Unmarshal(body, &coinGescoResponseETH)
-
-	fmt.Println(string(body))
-	ETH := "ethereum"
-	return coinGescoResponseETH.ETH.USD, ETH
-}
+//func GetCoinGescoValueETH() (float64, string) {
+//	responseETH, err := http.Get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
+//
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//	var coinGescoResponseETH CoinGescoETH
+//
+//	// read response body
+//	body, err := ioutil.ReadAll(responseETH.Body)
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//	// close response body
+//	responseETH.Body.Close()
+//	json.Unmarshal(body, &coinGescoResponseETH)
+//
+//	fmt.Println(string(body))
+//	ETH := "ethereum"
+//	return coinGescoResponseETH.ETH.USD, ETH
+//}
